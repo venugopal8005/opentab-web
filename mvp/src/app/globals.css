@@ -1,0 +1,117 @@
+@import "tailwindcss";
+
+:root {
+  --background: #0a0a0a;
+  --foreground: #ededed;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: Arial, Helvetica, sans-serif;
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+}
+
+/* 🧩 Default desktop look — unchanged */
+header {
+  transition: all 0.3s ease;
+}
+
+/* 📱 Responsive only when smaller than tablet width */
+@media (max-width: 768px) {
+  html, body {
+    width: 100%;
+    overflow-x: hidden;
+  }
+
+  /* Reduce spacing around header icons but keep structure */
+  header {
+    padding: 0 8px !important;
+  }
+
+  header > div {
+    gap: 10px !important;
+  }
+
+  .material-symbols-rounded,
+  .material-symbols-outlined {
+    font-size: 22px !important;
+  }
+
+  header svg {
+    width: 22px !important;
+    height: 22px !important;
+  }
+
+  /* Keep same layout but compress slightly */
+  section {
+    padding: 0 14px !important;
+  }
+
+  section h1 {
+    font-size: 26px !important;
+    line-height: 32px !important;
+  }
+
+  section input {
+    font-size: 17px !important;
+  }
+
+  button {
+    font-size: 16px !important;
+    padding: 10px 16px !important;
+    gap: 8px !important;
+  }
+
+  button span svg {
+    width: 20px !important;
+    height: 20px !important;
+  }
+
+  footer {
+    font-size: 14px !important;
+    opacity: 0.9;
+  }
+
+  /* Prevent text or icons from touching screen edges */
+  * {
+    box-sizing: border-box;
+  }
+}
+
+/* 📱 For extra-small phones (<480px) */
+@media (max-width: 480px) {
+  .material-symbols-rounded,
+  .material-symbols-outlined {
+    font-size: 20px !important;
+  }
+
+  header {
+    padding: 0 6px !important;
+  }
+
+  section h1 {
+    font-size: 22px !important;
+  }
+
+  section input {
+    font-size: 16px !important;
+  }
+
+  button {
+    padding: 8px 14px !important;
+  }
+
+  footer {
+    font-size: 13px !important;
+  }
+}
