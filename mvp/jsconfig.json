@@ -1,7 +1,8 @@
 {
   "compilerOptions": {
+    "baseUrl": ".",    // or "./src"
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": ["src/*"]  // without the leading dot in paths typically
     }
   }
 }
