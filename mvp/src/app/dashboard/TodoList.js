@@ -5,13 +5,15 @@ import { fetchTodos, createTodo, updateTodo, deleteTodo } from './api';
 
 // Kanban column display and color scheme
 const COLORS = {
-  todo: '#4748BF',
-  doing: '#8B90D7',
-  done: '#CFE7FF',
+  todo: '#4748BF',        // Blue/Purple for To Do
+  doing: '#8B90D7',       // Light Purple for Doing  
+  done: '#CFE7FF',        // Light Blue for Done
   textWhite: 'text-white',
   textBlack: 'text-black',
-  kanbanBorder: 'border-[#424141]',
+  kanbanBorder: 'border-[#424141]',  // Dark gray border from design
+  deleteBorder: 'border-[#8A0F0F]',  // Red for delete
 };
+
 const scrollbarHide = 'scrollbar-hide [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]';
 
 export default function TodoComponent() {
@@ -131,15 +133,39 @@ export default function TodoComponent() {
     );
   }
 
+  // Today's date string for min attribute on date input
+  const todayISO = new Date().toISOString().split('T')[0];
+
+  // Drag & Drop handlers
+  const onDragStart = (e, taskId) => {
+    e.dataTransfer.setData('text/plain', taskId);
+    e.dataTransfer.effectAllowed = 'move';
+  };
+
+  const onDragOver = (e) => {
+    e.preventDefault(); // necessary for drop to work
+  };
+
+  const onDrop = async (e, newStatus) => {
+    e.preventDefault();
+    const taskId = e.dataTransfer.getData('text/plain');
+    if (taskId) {
+      await moveTask(taskId, newStatus);
+    }
+  };
+
   return (
-    <div className="p-4 rounded-xl bg-[#1A1A2E] h-full flex flex-col">
-      <div className="flex justify-between items-center mb-4">
-        <h3 className="text-xl font-semibold text-white">To-Do / Kanban Board</h3>
-      </div>
+    <div className="p-4 rounded-xl bg-black border-2 border-[#424141] h-full flex flex-col">
       <div className="flex space-x-4 h-full pb-2">
-        <KanbanColumn title="To Do">
+        <KanbanColumn title="To Do" onDragOver={onDragOver} onDrop={(e) => onDrop(e, 'todo')}>
           {cols.todo.map(t => (
-            <KanbanTask key={t._id} color={COLORS.todo} textColor={COLORS.textWhite}>
+            <KanbanTask
+              key={t._id}
+              taskId={t._id}
+              color={COLORS.todo}
+              textColor={COLORS.textWhite}
+              onDragStart={onDragStart}
+            >
               {t.title}
               <button className="ml-2 text-xs text-red-400" onClick={() => onDelete(t._id)}>Delete</button>
               <button className="ml-2 text-xs text-blue-300" onClick={() => moveTask(t._id, 'done')}>Mark Done</button>
@@ -147,18 +173,32 @@ export default function TodoComponent() {
           ))}
           <AddTaskButton onClick={() => setOpen(true)} />
         </KanbanColumn>
-        <KanbanColumn title="Doing">
+
+        <KanbanColumn title="Doing" onDragOver={onDragOver} onDrop={(e) => onDrop(e, 'doing')}>
           {cols.doing.map(t => (
-            <KanbanTask key={t._id} color={COLORS.doing} textColor={COLORS.textWhite}>
+            <KanbanTask
+              key={t._id}
+              taskId={t._id}
+              color={COLORS.doing}
+              textColor={COLORS.textWhite}
+              onDragStart={onDragStart}
+            >
               {t.title}
               <button className="ml-2 text-xs text-red-400" onClick={() => onDelete(t._id)}>Delete</button>
               <button className="ml-2 text-xs text-blue-300" onClick={() => moveTask(t._id, 'done')}>Mark Done</button>
             </KanbanTask>
           ))}
         </KanbanColumn>
-        <KanbanColumn title="Done">
+
+        <KanbanColumn title="Done" onDragOver={onDragOver} onDrop={(e) => onDrop(e, 'done')}>
           {cols.done.map(t => (
-            <KanbanTask key={t._id} color={COLORS.done} textColor={COLORS.textBlack}>
+            <KanbanTask
+              key={t._id}
+              taskId={t._id}
+              color={COLORS.done}
+              textColor={COLORS.textBlack}
+              onDragStart={onDragStart}
+            >
               {t.title}
               <button className="ml-2 text-xs text-red-400" onClick={() => onDelete(t._id)}>Delete</button>
               <button className="ml-2 text-xs text-blue-300" onClick={() => moveTask(t._id, 'todo')}>Move to ToDo</button>
@@ -184,6 +224,7 @@ export default function TodoComponent() {
                   maxLength={200}
                 />
               </div>
+
               <div>
                 <label className="block text-sm mb-1">Description</label>
                 <textarea
@@ -193,6 +234,7 @@ export default function TodoComponent() {
                   placeholder="Details"
                 />
               </div>
+
               <div className="flex space-x-3">
                 <div className="flex-1">
                   <label className="block text-sm mb-1">Priority</label>
@@ -206,16 +248,29 @@ export default function TodoComponent() {
                     <option value='high'>high</option>
                   </select>
                 </div>
-                <div className="flex-1">
+                <div className="flex-1 relative">
                   <label className="block text-sm mb-1">Deadline</label>
                   <input
                     type="date"
                     className="w-full px-3 py-2 rounded-md bg-[#000000] border border-[#4C4C4C] outline-none"
                     value={form.deadline}
                     onChange={e => setForm({ ...form, deadline: e.target.value })}
+                    min={todayISO} // restrict past dates
                   />
+                  <div
+                    className="absolute right-3 top-9 cursor-pointer select-none text-gray-400"
+                    onClick={() => {
+                      const input = document.querySelector('input[type="date"]');
+                      if (input) input.showPicker?.();
+                    }}
+                    aria-label="Choose date"
+                    role="button"
+                  >
+                    📅
+                  </div>
                 </div>
               </div>
+
               <div className="flex space-x-3">
                 <div className="flex-1">
                   <label className="block text-sm mb-1">Status</label>
@@ -241,6 +296,7 @@ export default function TodoComponent() {
                   />
                 </div>
               </div>
+
               <div>
                 <label className="block text-sm mb-1">Tags (comma separated)</label>
                 <input
@@ -250,6 +306,7 @@ export default function TodoComponent() {
                   placeholder="work, urgent, ui"
                 />
               </div>
+
               <div>
                 <label className="block text-sm mb-1">Subtasks</label>
                 <button
@@ -280,6 +337,7 @@ export default function TodoComponent() {
                   </div>
                 ))}
               </div>
+
               <div className="flex justify-end space-x-2 pt-4">
                 <button
                   type="button"
@@ -316,8 +374,12 @@ const AddTaskButton = ({ onClick }) => (
   </div>
 );
 
-const KanbanColumn = ({ title, children }) => (
-  <div className={`flex-1 flex-shrink-0 p-3 rounded-lg bg-black border ${COLORS.kanbanBorder} h-full flex flex-col`}>
+const KanbanColumn = ({ title, onDragOver, onDrop, children }) => (
+  <div
+    onDragOver={onDragOver}
+    onDrop={onDrop}
+    className={`flex-1 flex-shrink-0 p-3 rounded-lg bg-black border ${COLORS.kanbanBorder} h-full flex flex-col`}
+  >
     <div className="flex justify-between items-center mb-3">
       <h4 className="text-lg font-semibold text-white">{title}</h4>
     </div>
@@ -325,8 +387,10 @@ const KanbanColumn = ({ title, children }) => (
   </div>
 );
 
-const KanbanTask = ({ children, color, textColor }) => (
+const KanbanTask = ({ children, color, textColor, taskId, onDragStart }) => (
   <div
+    draggable
+    onDragStart={(e) => onDragStart(e, taskId)}
     style={{ backgroundColor: color }}
     className={`p-3 rounded-md text-sm ${textColor} cursor-grab shadow-md hover:shadow-lg transition-shadow`}
   >
