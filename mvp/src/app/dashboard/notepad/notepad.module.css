@@ -1,0 +1,338 @@
+/* src/app/dashboard/notepad/notepad.module.css */
+
+/* Base editor content */
+.tiptapContent:focus {
+  outline: none;
+}
+
+
+/* Paragraphs */
+.tiptapContent p {
+  margin: 6px 0;
+  font-size: 1rem;
+  line-height: 1.5rem;
+}
+
+/* Headings */
+.tiptapContent h1 {
+  font-size: 2.4rem;
+  font-weight: 800;
+  line-height: 2.6rem;
+  margin: 20px 0 10px;
+}
+
+.tiptapContent h2 {
+  font-size: 1.9rem;
+  font-weight: 700;
+  line-height: 2.3rem;
+  margin: 18px 0 9px;
+}
+
+.tiptapContent h3 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  line-height: 2rem;
+  margin: 16px 0 8px;
+}
+
+/* Page Heading (outside the paper) */
+.pageHeading {
+  padding: 0 0 1rem 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  margin-bottom: 2rem;
+}
+
+/* A4 Paper Layout */
+.notepadContainer {
+  width: 21cm;
+  max-width: 100%;
+  min-height: 29.7cm;
+  height: auto;
+  margin: 0 auto;
+  background-color: #0f0f1a;
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+  background-size: 100% 24px, 24px 100%;
+  background-repeat: repeat;
+  padding: 1cm 2cm 4cm 2cm;
+  box-shadow:
+    0 25px 50px -12px rgba(0, 0, 0, 0.5),
+    0 0 0 1px rgba(255, 255, 255, 0.05),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  backdrop-filter: blur(20px);
+  position: relative;
+  box-sizing: border-box;
+}
+
+/* When Full width is ON, match the cover width (full container width) */
+.notepadFullWidth {
+  width: 100%;
+  max-width: 100%;
+}
+
+/* ------------------ Notion-like block containers ------------------ */
+
+.block-container {
+  background: rgba(255, 255, 255, 0.025);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  padding: 24px 24px 24px 64px;
+  position: relative;
+  cursor: text;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  margin-bottom: 24px;
+  display: flex;
+  align-items: flex-start;
+}
+
+.block-container:hover {
+  border-color: rgba(255, 255, 255, 0.15);
+  box-shadow:
+    0 8px 32px rgba(0, 0, 0, 0.2),
+    0 0 0 1px rgba(255, 255, 255, 0.12);
+  transform: translateY(-2px);
+}
+
+/* Gutter styling (for per-block drag handle, etc.) */
+.block-gutter {
+  position: absolute;
+  left: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  z-index: 10;
+  pointer-events: none;
+}
+
+.block-container:hover .block-gutter,
+.block-container:focus-within .block-gutter {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.drag-handle {
+  display: inline-block;
+  color: rgba(255, 255, 255, 0.4);
+  font-size: 12px;
+  line-height: 1;
+  cursor: grab;
+  user-select: none;
+}
+
+.drag-handle:active {
+  cursor: grabbing;
+}
+
+/* Focused block */
+.focused-block {
+  border-left: 4px solid #7b59a6;
+  background: rgba(123, 89, 166, 0.12);
+  box-shadow:
+    0 0 0 1px rgba(123, 89, 166, 0.3),
+    0 12px 40px rgba(123, 89, 166, 0.2);
+}
+
+.focused-block .block-gutter {
+  background: linear-gradient(180deg, #7b59a6, #a67bc6) !important;
+  opacity: 1 !important;
+}
+
+.block-container:focus-within {
+  border-color: #7b59a6;
+  box-shadow:
+    0 0 0 1px #7b59a6,
+    0 20px 40px rgba(123, 89, 166, 0.3);
+  transform: translateY(-4px);
+}
+
+/* ------------------ Lists ------------------ */
+
+.tiptapContent ul,
+.tiptapContent ol {
+  list-style-position: outside;
+  padding-left: 1.5em;
+  margin: 10px 0;
+}
+
+.tiptapContent ul {
+  list-style-type: disc;
+}
+
+.tiptapContent ol {
+  list-style-type: decimal;
+}
+
+/* Task list (To-do) styling */
+.tiptapContent ul[data-type='taskList'] {
+  list-style: none;
+  padding-left: 0;
+  margin-left: 0;
+}
+
+.taskItem,
+.tiptapContent ul[data-type='taskList'] li[data-type='taskItem'] {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+  margin: 4px 0;
+}
+
+.tiptapContent ul[data-type='taskList'] li[data-type='taskItem'] > label {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+  width: 100%;
+}
+
+.taskItem > label > input[type='checkbox'],
+.tiptapContent ul[data-type='taskList'] input[type='checkbox'] {
+  width: 16px;
+  height: 16px;
+  margin-top: 4px;
+  margin-right: 6px;
+  accent-color: #7b59a6;
+  cursor: pointer;
+}
+
+.tiptapContent ul[data-type='taskList'] p {
+  margin: 0;
+  display: inline-block;
+  font-size: 0.95rem;
+  line-height: 1.4rem;
+}
+
+/* ------------------ Quote block ------------------ */
+
+.tiptapContent blockquote {
+  border-left: 3px solid #7b59a6;
+  padding-left: 1rem;
+  margin: 10px 0;
+  color: #d4d4e7;
+  background: rgba(123, 89, 166, 0.08);
+  border-radius: 4px;
+}
+
+.tiptapContent blockquote p {
+  margin: 6px 0;
+}
+
+/* Collapse visually empty quotes */
+.tiptapContent blockquote:is(
+  :empty,
+  :has(> p:only-child:empty),
+  :has(> p:only-child:has(> :global(br.ProseMirror-trailingBreak)))
+) {
+  border: none;
+  background: transparent;
+  padding-left: 0;
+  margin: 0;
+}
+
+/* ------------------ Code block ------------------ */
+
+.tiptapContent pre {
+  background: #111827;
+  color: #e5e7eb;
+  padding: 0.75rem 1rem;
+  border-radius: 6px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+    'Liberation Mono', 'Courier New', monospace;
+  font-size: 0.9rem;
+  overflow-x: auto;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+/* Inline code */
+.tiptapContent code {
+  background: rgba(148, 163, 184, 0.15);
+  padding: 0.1rem 0.3rem;
+  border-radius: 4px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+    'Liberation Mono', 'Courier New', monospace;
+  font-size: 0.9em;
+}
+
+/* Divider */
+.tiptapContent hr {
+  border: none;
+  border-top: 1px solid rgba(148, 163, 184, 0.4);
+  margin: 1.25rem 0;
+}
+
+/* ------------------ Tiptap Drag Handle (node drag) ------------------ */
+
+.tiptapContent :global(.custom-drag-handle) {
+  width: 20px;
+  height: 20px;
+  border-radius: 9999px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: grab;
+  color: rgba(148, 163, 184, 0.8);
+  background: rgba(15, 23, 42, 0.9);
+  border: 1px solid rgba(148, 163, 184, 0.4);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
+}
+
+.tiptapContent :global(.custom-drag-handle::before) {
+  content: '⋮⋮';
+  font-size: 11px;
+  line-height: 1;
+}
+
+.tiptapContent :global(.custom-drag-handle:active) {
+  cursor: grabbing;
+  transform: scale(0.96);
+  opacity: 0.9;
+}
+
+/* ------------------ Tiptap table styling ------------------ */
+
+/* Base table styling on dark background */
+.tiptapContent :global(table) {
+  border-collapse: collapse;
+  table-layout: fixed;
+  width: 100%;
+  margin: 0.75rem 0;
+}
+
+.tiptapContent :global(td),
+.tiptapContent :global(th) {
+  min-width: 6rem;
+  border: 1px solid #4b5563;
+  padding: 4px 6px;
+  vertical-align: top;
+  box-sizing: border-box;
+  color: #e5e7eb;
+}
+
+.tiptapContent :global(th) {
+  font-weight: 600;
+  background-color: #111827;
+}
+
+/* Selected cell highlight (Tiptap Table / ProseMirror) */
+.tiptapContent :global(.selectedCell::after) {
+  position: absolute;
+  content: '';
+  inset: 0;
+  background: rgba(147, 197, 253, 0.35);
+  pointer-events: none;
+}
+
+/* Column resize handle styling (prosemirror-tables) */
+.tiptapContent :global(.column-resize-handle) {
+  position: absolute;
+  right: -2px;
+  top: -1px;
+  bottom: -1px;
+  width: 4px;
+  background: rgba(123, 89, 166, 0.9);
+  cursor: col-resize;
+  z-index: 20;
+}
